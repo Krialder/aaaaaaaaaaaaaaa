@@ -1,18 +1,18 @@
 # Accountability-Monitor (macOS)
 
-Ein sichtbarer Wächter für den Mac, der im Sekundentakt die aktive App und die aktive Browser-URL liest, sie gegen eine Regelliste prüft, alles lokal protokolliert und bei einem Verstoß eine Meldung an einen Partner schickt (über ntfy-Push und optional E-Mail). Einvernehmliches Accountability-Werkzeug: die betroffene Person weiß davon, sieht das Protokoll und eine Menüleisten-Anzeige, und kann alles einsehen.
+Ein sichtbarer Wächter für den Mac, der im Sekundentakt die aktive App und die aktive Browser-URL liest, sie gegen eine Regelliste prüft, alles lokal protokolliert und bei einem Verstoß eine Meldung an den Admin schickt (über ntfy-Push und optional E-Mail). Einvernehmliches Accountability-Werkzeug: die betroffene Person sieht das Protokoll und eine Menüleisten-Anzeige und kann alles einsehen.
 
 ## Was das Werkzeug tut und was nicht
 
 Es erfasst pro Messung nur zwei Dinge: den Namen der Vordergrund-App und, falls ein bekannter Browser vorn ist, die URL des aktiven Tabs. Beides über sichtbares AppleScript.
 
-Es gibt **keinen** Tastatur-Mitschnitt, **keine** Aufzeichnung von Eingaben, Passwörtern oder Inhalten, **keine** Screenshots und nichts Verstecktes. Eine Menüleisten-Anzeige zeigt dauerhaft, dass und was läuft.
+Abgrenzung: Es gibt keinen Tastatur-Mitschnitt, keine Aufzeichnung von Eingaben, Passwörtern oder Inhalten, keine Screenshots und nichts Verstecktes. Eine Menüleisten-Anzeige zeigt dauerhaft, dass und was läuft.
 
 ## Bestandteile
 
 - **Monitor** (`monitor.py`): der Wächter. Läuft als LaunchAgent in der Benutzersitzung.
 - **Menüleisten-Anzeige** (`statusbar.py`): zeigt Status, letzte Prüfung und Zahl der Verstöße. Reiner Betrachter, steuert den Monitor nicht.
-- **Watchdog** (`watchdog.sh`): läuft als root-Daemon, hält den Monitor am Leben und stellt ihn wieder her, falls jemand ihn entlädt oder löscht. Das ist die Antwort auf „trotz Cold Turkey".
+- **Watchdog** (`watchdog.sh`): läuft als root-Daemon, hält den Monitor am Leben und stellt ihn wieder her, falls jemand ihn entlädt oder löscht. („trotz Cold Turkey", siehe unten)
 - **Konfig-Auditing** (`sysaudit.py`): protokolliert als root-Daemon Änderungen an der Systemkonfiguration (installierte Programme, Admin-Konten, Sicherheitsschalter).
 
 ## Autostart, und was „trotz Cold Turkey" bedeutet
@@ -22,12 +22,12 @@ Zwei Punkte, die oft verwechselt werden:
 - **Start beim Hochfahren:** Der Monitor braucht die grafische Sitzung (nur dort antworten System Events und die Browser), also startet er mit dem Login, nicht vor dem Login. Damit es schon beim Einschalten ohne Anmeldemaske losgeht, in den Systemeinstellungen die **automatische Anmeldung** aktivieren.
 - **Trotz Cold Turkey und App-Blocker:** Diese Programme verwalten keine launchd-Dienste. Sie beenden Apps aus ihrer Liste und sperren Webseiten, aber sie entfernen den Wächter nicht, solange `python3` nicht selbst gesperrt ist. Cold Turkey, das das Terminal sperrt, schließt zusätzlich die Lücke zum manuellen Abschalten. Der Watchdog härtet das ab: als root-Daemon ist er ohne sudo nicht zu entladen und stellt den Monitor alle 30 Sekunden wieder her.
 
-Grenze dieser Härtung, ehrlich benannt: echte Manipulationssicherheit setzt voraus, dass das **Alltagskonto kein Admin** ist. Ein Admin kann mit sudo alles entfernen. Ideal also ein Standard-Benutzerkonto für den Alltag; die Einrichtung läuft einmalig mit einem Admin-Konto.
+Grenze dieser Härtung: Manipulationssicherheit setzt voraus, dass das **Alltagskonto kein Admin** ist. Ein Admin kann mit sudo alles entfernen. Ideal also ein Standard-Benutzerkonto für den Alltag; die Einrichtung läuft einmalig mit einem Admin-Konto.
 
 ## Voraussetzungen
 
 - macOS mit `python3` (`xcode-select --install`).
-- Für den Partner die **ntfy**-App (iOS/Android, kostenlos), abonniert auf denselben Topic wie in `config.json`. Optional zusätzlich E-Mail.
+- Für den Admin die **ntfy**-App (iOS/Android, kostenlos), abonniert auf denselben Topic wie in `config.json`. Optional zusätzlich E-Mail.
 - Für die Menüleisten-Anzeige PyObjC. Oft schon vorhanden; falls nicht, im Admin-Fenster einmalig `pip3 install pyobjc-framework-Cocoa`.
 
 ## Auf den Mac holen (erster Schritt)
@@ -79,7 +79,7 @@ Braucht Tkinter im `python3`. Fehlt es, sagt der Starter es und nennt die Abhilf
 
 1. **Konfiguration.** `bash install.sh` (ohne sudo) erzeugt `config.json`. Darin setzen:
    - `ntfy.topic` auf einen langen, unratbaren Wert (der Topic ist das einzige Geheimnis).
-   - optional die `email`-Sektion (bei Gmail ein **App-Passwort**, Host `smtp.gmail.com`, Port `587`; `recipient` ist die Adresse des Partners).
+   - optional die `email`-Sektion (bei Gmail ein **App-Passwort**, Host `smtp.gmail.com`, Port `587`; `recipient` ist die Adresse des Admin).
 
 2. **Cold-Turkey-Liste übernehmen.** In Cold Turkey die Blocks exportieren, die Datei als `export.ctbbl` daneben legen. Zuerst prüfen, dann übernehmen:
 
