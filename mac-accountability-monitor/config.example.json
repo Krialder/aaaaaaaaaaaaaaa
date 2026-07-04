@@ -1,0 +1,53 @@
+{
+  "_hinweis": "Kopie als config.json anlegen und Werte anpassen. Nie mit echten Token/Passwoertern weitergeben.",
+
+  "ntfy": {
+    "server": "https://ntfy.sh",
+    "topic": "HIER-EINEN-UNRATBAREN-TOPIC-SETZEN-z-B-accpartner-7f3a9c21",
+    "token": "",
+    "priority": "high",
+    "title": "Accountability Monitor"
+  },
+
+  "email": {
+    "_hinweis": "Zweiter Meldeweg. Leer lassen, um E-Mail abzuschalten. Bei Gmail ein App-Passwort verwenden, nicht das Konto-Passwort.",
+    "host": "",
+    "port": 587,
+    "user": "",
+    "password": "",
+    "sender": "",
+    "recipient": ""
+  },
+
+  "poll_interval_seconds": 3,
+  "cooldown_seconds": 300,
+  "heartbeat_seconds": 0,
+  "notify_on_start": true,
+
+  "history_path": "~/AccountabilityMonitor/activity_history.jsonl",
+  "log_path": "~/AccountabilityMonitor/activity.jsonl",
+  "log_raw_samples": false,
+  "status_path": "~/AccountabilityMonitor/status.json",
+  "generated_rules": "rules.generated.json",
+
+  "spool_path": "~/AccountabilityMonitor/spool.pending.json",
+  "spool_flush_seconds": 60,
+  "spool_max": 500,
+  "blind_after_samples": 20,
+
+  "sysaudit_notify": true,
+  "sysaudit_snapshot_path": "/Library/Application Support/AccountabilityMonitor/sysaudit_snapshot.json",
+  "sysaudit_history_path": "/Library/Application Support/AccountabilityMonitor/sysaudit_history.jsonl",
+
+  "rules": {
+    "_hinweis": "app_mode/web_mode je 'blocklist' oder 'allowlist'. blocklist meldet Verbotenes, allowlist meldet alles ausser dem Erlaubten. Beide Seiten unabhaengig waehlbar (Mischung moeglich).",
+    "app_mode": "blocklist",
+    "web_mode": "blocklist",
+    "blocked_domains": [],
+    "blocked_apps": [],
+    "allowed_domains": [],
+    "allowed_apps": [],
+    "always_notify_apps": ["Terminal", "iTerm2"],
+    "baseline_allow_apps": []
+  }
+}

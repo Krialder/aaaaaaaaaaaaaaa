@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  LaunchDaemon (root), der das Konfig-Auditing im Abstand ausfuehrt. Root, weil einige
+  Systemfakten (installierte Pakete, Profile, Log-Dateien) nur mit Systemrechten
+  vollstaendig sind. Jeder Lauf ist ein Einzelschritt (--once), deshalb StartInterval
+  statt Dauerprozess. install.sh ersetzt die __PLATZHALTER__.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.accountability.sysaudit</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>__PYTHON__</string>
+    <string>__SYSAUDIT__</string>
+    <string>--config</string>
+    <string>__CONFIG__</string>
+    <string>--user-home</string>
+    <string>__USER_HOME__</string>
+    <string>--once</string>
+  </array>
+
+  <!-- Alle 5 Minuten pruefen. Konfig-Aenderungen sind selten, haeufiger lohnt nicht. -->
+  <key>StartInterval</key>
+  <integer>300</integer>
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>__STDOUT__</string>
+  <key>StandardErrorPath</key>
+  <string>__STDERR__</string>
+</dict>
+</plist>

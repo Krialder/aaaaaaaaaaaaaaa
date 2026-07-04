@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  LaunchDaemon (root), der den Watchdog alle 30 Sekunden startet. Als Daemon unter
+  /Library/LaunchDaemons laeuft er mit Systemrechten und ist ohne sudo nicht zu
+  entladen. install.sh ersetzt die __PLATZHALTER__.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.accountability.watchdog</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>__WATCHDOG__</string>
+  </array>
+
+  <!-- Alle 30s pruefen. Kurzer Lauf, danach beendet sich das Skript wieder. -->
+  <key>StartInterval</key>
+  <integer>30</integer>
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>__STDOUT__</string>
+  <key>StandardErrorPath</key>
+  <string>__STDERR__</string>
+</dict>
+</plist>
